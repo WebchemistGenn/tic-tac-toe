@@ -2,6 +2,8 @@
 
 > 주말스터디
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c5f5914b-c932-4591-816e-6206dc74378d/deploy-status)](https://app.netlify.com/sites/webchemist-tic-tec-toe/deploys)
+
 [리액트 공식홈페이지](https://reactjs.org)에서 제공하는 튜토리얼 게임 만들어보기
 
 ```js
