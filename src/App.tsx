@@ -8,6 +8,7 @@ const App: React.FC = () => {
   const [use, setUse] = useState<number[]>([]);
   const [winner, setWinner] = useState<string>('');
 
+  // * Winner 계산 함수 ( data는 player가 보유한 위치 배열 )
   const calcWinner = (data: number[]) => {
     let result = false;
     const win = [
@@ -21,8 +22,11 @@ const App: React.FC = () => {
       [2, 4, 6],
     ];
 
+    // * 승리 조건 반복
     win.forEach((item) => {
-      const [a, b, c] = item;
+      const [a, b, c] = item; // * 내부에 담긴 숫자 3개를 추출합니다.
+
+      // * 3개의 값이 모두 만족할때 즉 3개를 모두 보유해서 승리를 하였을때 결과를 true로 바꿉니다.
       if (
         data.indexOf(a) > -1 &&
         data.indexOf(b) > -1 &&
@@ -32,32 +36,42 @@ const App: React.FC = () => {
       }
     });
 
+    // * 내용을 반환합니다.
     return result;
   };
 
+  const handleInit = () => {
+    setTrun(0);
+    setPlayer1([]);
+    setPlayer2([]);
+    setWinner('');
+  };
+
   const handleClick = async (position: number) => {
+    let useTemp = [...use]; // * 현재의 use를 temp에 추가
     if (use.length !== [...player1, ...player2].length) {
-      setUse([...player1, ...player2]);
+      useTemp = [...player1, ...player2];
     }
 
     if (winner !== '') return false;
-    if (use.indexOf(position) === -1) {
+    if (useTemp.indexOf(position) === -1) {
       if (turn % 2 === 0) {
-        // ? Trun Player1
+        // ! Trun Player1
         setPlayer1([...player1, position]);
         const result = calcWinner([...player1, position]);
         if (result) {
           setWinner('Player1');
         }
       } else {
-        // ? Trun Player2
+        // ! Trun Player2
         setPlayer2([...player2, position]);
         const result = calcWinner([...player2, position]);
         if (result) {
           setWinner('Player2');
         }
       }
-      setUse([...use, position]);
+
+      setUse([...useTemp, position]);
       setTrun(turn + 1);
     }
   };
@@ -80,11 +94,23 @@ const App: React.FC = () => {
       { player1: [], player2: [] }
     );
 
-    console.log(num);
+    const result1 = calcWinner(player1);
+    if (result1) {
+      setWinner('Player1');
+    }
+
+    const result2 = calcWinner(player2);
+    if (result2) {
+      setWinner('Player2');
+    }
+
+    if (!result1 && !result2) {
+      setWinner('');
+    }
 
     setPlayer1(player1);
     setPlayer2(player2);
-    setTrun(num);
+    setTrun(num - 1);
   };
 
   return (
@@ -99,23 +125,28 @@ const App: React.FC = () => {
             </Box>
           ))}
         </GamePanel>
-      </Container>
-      <InfoPanel>
-        {winner === '' ? (
-          <h4>
-            NextPlayer: {[...player1, ...player2].length % 2 === 0 ? 'O' : 'X'}
-          </h4>
-        ) : (
-          <h4>Winner: {winner}</h4>
-        )}
-
-        {use.map((item, index) => (
-          <div key={item}>
-            {item}
-            <button onClick={() => handleReturn(index)}>돌아가기</button>
+        <InfoPanel>
+          {winner === '' ? (
+            <h4>
+              NextPlayer:{' '}
+              {[...player1, ...player2].length % 2 === 0 ? 'O' : 'X'}
+            </h4>
+          ) : (
+            <h4>Winner: {winner}</h4>
+          )}
+          <div>
+            1. <button onClick={handleInit}>Go to game start</button>
           </div>
-        ))}
-      </InfoPanel>
+          {use.map((item, index) => (
+            <div key={item}>
+              {index + 2}.&nbsp;
+              <button onClick={() => handleReturn(index)}>
+                Go to move #{index + 1}
+              </button>
+            </div>
+          ))}
+        </InfoPanel>
+      </Container>
     </React.Fragment>
   );
 };
@@ -134,6 +165,7 @@ const GamePanel = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 150px;
+  height: 150px;
 `;
 
 const Box = styled.div`
@@ -148,5 +180,10 @@ const Box = styled.div`
 `;
 
 const InfoPanel = styled.div`
-  text-align: center;
+  margin-left: 10px;
+  text-align: left;
+
+  h4 {
+    margin: 0 0 5px 0;
+  }
 `;
