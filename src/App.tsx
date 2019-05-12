@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 const App: React.FC = () => {
@@ -40,14 +40,14 @@ const App: React.FC = () => {
     return result;
   };
 
-  const handleInit = useCallback(() => {
+  const handleInit = () => {
     setTrun(0);
     setPlayer1([]);
     setPlayer2([]);
     setWinner('');
-  }, []);
+  };
 
-  const handleClick = useCallback(async (position: number) => {
+  const handleClick = async (position: number) => {
     let useTemp = [...use]; // * 현재의 use를 temp에 추가
     if (use.length !== [...player1, ...player2].length) {
       useTemp = [...player1, ...player2];
@@ -74,9 +74,9 @@ const App: React.FC = () => {
       setUse([...useTemp, position]);
       setTrun(turn + 1);
     }
-  }, []);
+  };
 
-  const handleReturn = useCallback((num: number) => {
+  const handleReturn = (num: number) => {
     const { player1, player2 } = use.reduce<{
       player1: number[];
       player2: number[];
@@ -111,7 +111,7 @@ const App: React.FC = () => {
     setPlayer1(player1);
     setPlayer2(player2);
     setTrun(num - 1);
-  }, []);
+  };
 
   return (
     <React.Fragment>
